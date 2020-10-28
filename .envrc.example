@@ -1,0 +1,8 @@
+# Used to deploy to testnets
+export HDWALLET_MNEMONIC=''
+
+# Used to deploy to testnets
+export INFURA_API_KEY=''
+
+# Used for verifying contracts on Etherscan
+export ETHERSCAN_API_KEY=''

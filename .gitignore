@@ -1,0 +1,23 @@
+#Builder files
+cache
+.cache-openzeppelin
+artifacts
+.history
+build
+.build-openzeppelin
+node_modules
+dist
+coverage
+coverage.json
+.envrc
+.openzeppelin/dev-*
+.openzeppelin/.session
+.oz-migrate/dev-*
+abis
+test-results.xml
+.DS_Store
+deployments/local*
+deployments/pt*
+deployments/fork*
+Networks.md
+.vscode
