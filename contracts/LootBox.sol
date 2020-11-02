@@ -1,38 +1,69 @@
 pragma solidity ^0.6.12;
+pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC721/ERC721.sol";
-import "./external/openzeppelin/ProxyFactory.sol";
-import "./LootBoxContainerFactory.sol";
+import "./LootBoxInterface.sol";
 
-contract LootBox is ERC721UpgradeSafe, ProxyFactory {
+abstract contract LootBox is LootBoxInterface {
 
-  event LootBoxInitialized(
-    string name,
-    string symbol,
-    string baseURI
-  );
-
-  event TokenURISet(uint256 indexed tokenId, string tokenUri);
-
-  LootBoxContainerFactory public lootBoxContainerFactory;
-
-  function initialize (
-    string calldata name,
-    string calldata symbol,
-    string calldata baseURI_,
-    LootBoxContainerFactory _factory
-  ) external initializer {
-    __ERC721_init(name, symbol);
-    _setBaseURI(baseURI_);
-    lootBoxContainerFactory = _factory;
-
-    emit LootBoxInitialized(name, symbol, baseURI_);
+  function executeCalls(Call[] calldata calls) external override onlyAuthorized returns (bytes[] memory) {
+    bytes[] memory response = new bytes[](calls.length);
+    for (uint256 i = 0; i < calls.length; i++) {
+      response[i] = _executeCall(calls[i].to, calls[i].value, calls[i].data);
+    }
+    return response;
   }
 
-  function mint() external returns (address) {
-    LootBoxContainer container = lootBoxContainerFactory.create(this);
-    uint256 id = uint256(address(container));
-    _mint(_msgSender(), id);
+  function _executeCall(address to, uint256 value, bytes memory data) internal returns (bytes memory) {
+    (bool succeeded, bytes memory returnValue) = to.call{value: value}(data);
+    require(succeeded, string(returnValue));
+    return returnValue;
+  }
+
+  receive() external override payable {
+    emit ReceivedEther(msg.sender, msg.value);
+  }
+
+  function transferEther(address payable to, uint256 amount) external override onlyAuthorized {
+    to.transfer(amount);
+
+    emit TransferredEther(to, amount);
+  }
+
+  function withdrawERC20(IERC20[] memory tokens) external override {
+    for (uint256 i = 0; i < tokens.length; i++) {
+      tokens[i].transfer(owner(), tokens[i].balanceOf(address(this)));
+
+      emit WithdrewERC20(address(tokens[i]));
+    }
+  }
+
+  function withdrawERC721(WithdrawERC721[] memory withdrawals) external override {
+    for (uint256 i = 0; i < withdrawals.length; i++) {
+      for (uint256 tokenIndex = 0; tokenIndex < withdrawals[i].tokenIds.length; tokenIndex++) {
+        withdrawals[i].token.transferFrom(address(this), owner(), withdrawals[i].tokenIds[tokenIndex]);
+      }
+
+      emit WithdrewERC721(address(withdrawals[i].token), withdrawals[i].tokenIds);
+    }
+  }
+
+  function withdrawERC1155(WithdrawERC1155[] memory withdrawals) external override {
+    for (uint256 i = 0; i < withdrawals.length; i++) {
+      withdrawals[i].token.safeBatchTransferFrom(address(this), owner(), withdrawals[i].ids, withdrawals[i].amounts, withdrawals[i].data);
+
+      emit WithdrewERC1155(address(withdrawals[i].token), withdrawals[i].ids, withdrawals[i].amounts, withdrawals[i].data);
+    }
+  }
+
+  function owner() public override virtual view returns (address);
+
+  function isAuthorized(address sender) public override virtual view returns (bool) {
+    return owner() == sender;
+  }
+
+  modifier onlyAuthorized() {
+    require(isAuthorized(msg.sender), "LootBoxContainer/not-authorized");
+    _;
   }
 
 }
