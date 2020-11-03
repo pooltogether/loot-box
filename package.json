@@ -9,6 +9,8 @@
     "compile": "buidler --show-stack-traces --max-memory 8192 compile",
     "console": "buidler console --network",
     "deploy": "buidler deploy --write true --network",
+    "start-gas": "echo 'Starting node for gas testing....\n'; rm -rf deployments/localhost_31337; buidler node",
+    "gas": "OPTIMIZER_ENABLED=true REPORT_GAS=true buidler test --network localhost",
     "test": "buidler test",
     "fork-test": "buidler --network fork run ./scripts/fork-test.js",
     "coverage": "rm -rf build cache test-results.xml && USE_LITERAL_CONTENT=false buidler coverage --network coverage --temp build",
@@ -23,6 +25,7 @@
     "@nomiclabs/buidler-etherscan": "^2.1.0",
     "@nomiclabs/buidler-waffle": "^2.1.0",
     "buidler-deploy": "^0.5.18",
+    "buidler-gas-reporter": "^0.1.4",
     "chai": "^4.2.0",
     "deploy-eip-1820": "1.0.0",
     "ethereum-waffle": "^3.1.1",
@@ -32,7 +35,7 @@
     "truffle-extract": "pooltogether/truffle-extract"
   },
   "dependencies": {
-    "@openzeppelin/contracts-ethereum-package": "^3.0.0",
+    "@openzeppelin/contracts": "^3.2.0",
     "ganache-cli": "^6.12.0"
   },
   "files": [
