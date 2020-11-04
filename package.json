@@ -1,7 +1,7 @@
 {
   "name": "@pooltogether/loot-box",
   "description": "Loot Boxes are Ethereum smart contracts that can be traded like NFTs and plundered by the owner.",
-  "version": "0.1.3",
+  "version": "1.0.0-beta.1",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -15,7 +15,7 @@
     "fork-test": "buidler --network fork run ./scripts/fork-test.js",
     "coverage": "yarn clean && USE_LITERAL_CONTENT=false buidler coverage --network coverage --temp artifacts",
     "verify": "buidler etherscan-verify --license MIT --solc-input --api-key $ETHERSCAN_API_KEY --network",
-    "prepack": "rm -rf artifacts cache && buidler compile && truffle-extract -b artifacts -o abis",
+    "prepack": "yarn clean && buidler compile && truffle-extract -b artifacts -o abis",
     "postpublish": "PACKAGE_VERSION=$(./scripts/package-version.sh) && git tag -ae v$PACKAGE_VERSION && git push --tags",
     "clean": "rm -rf artifacts cache coverage abis test-results.xml"
   },
