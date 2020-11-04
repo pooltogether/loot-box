@@ -13,11 +13,11 @@
     "gas": "OPTIMIZER_ENABLED=true REPORT_GAS=true buidler test --network localhost",
     "test": "buidler test",
     "fork-test": "buidler --network fork run ./scripts/fork-test.js",
-    "coverage": "rm -rf build cache test-results.xml && USE_LITERAL_CONTENT=false buidler coverage --network coverage --temp build",
+    "coverage": "yarn clean && USE_LITERAL_CONTENT=false buidler coverage --network coverage --temp artifacts",
     "verify": "buidler etherscan-verify --license MIT --solc-input --api-key $ETHERSCAN_API_KEY --network",
     "prepack": "rm -rf artifacts cache && buidler compile && truffle-extract -b artifacts -o abis",
     "postpublish": "PACKAGE_VERSION=$(./scripts/package-version.sh) && git tag -ae v$PACKAGE_VERSION && git push --tags",
-    "clean": "rm -rf artifacts cache coverage abis"
+    "clean": "rm -rf artifacts cache coverage abis test-results.xml"
   },
   "devDependencies": {
     "@nomiclabs/buidler": "^1.4.3",
