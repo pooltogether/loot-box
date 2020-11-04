@@ -2,7 +2,7 @@
 
 pragma solidity ^0.6.12;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "./external/openzeppelin/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /// @title An ownable ERC721
@@ -21,6 +21,8 @@ contract ERC721Ownable is ERC721, Ownable {
     string baseURI
   );
 
+  uint256 internal _totalSupply;
+
   constructor (
     string memory name,
     string memory symbol,
@@ -38,9 +40,13 @@ contract ERC721Ownable is ERC721, Ownable {
   }
 
   function mint(address to) external returns (uint256) {
-    uint256 tokenId = totalSupply().add(1);
-    _mint(to, tokenId);
-    return tokenId;
+    _totalSupply = _totalSupply.add(1);
+    _mint(to, _totalSupply);
+    return _totalSupply;
+  }
+
+  function totalSupply() external view returns (uint256) {
+    return _totalSupply;
   }
 
 }

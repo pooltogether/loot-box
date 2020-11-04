@@ -63,6 +63,8 @@ describe('ERC721Ownable', () => {
       await expect(erc721Ownable.mint(wallet._address))
         .to.emit(erc721Ownable, 'Transfer')
         .withArgs(ethers.constants.AddressZero, wallet._address, 3)
+
+      expect(await erc721Ownable.totalSupply()).to.equal(3)
     })
   })
 
