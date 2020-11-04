@@ -42,9 +42,7 @@ describe('LootBoxController', () => {
     [wallet, wallet2] = await buidler.ethers.getSigners()
     provider = buidler.ethers.provider
 
-    registryContract = await deploy1820(wallet)
-
-    deployments.fixture()
+    await deployments.fixture()
 
     erc20Mintable = await deployContract(wallet, ERC20Mintable, ['test', 'test'])
     erc721Mintable = await deployContract(wallet, ERC721Mintable, ['test', 'test', 'hello.com'])
