@@ -12,6 +12,16 @@ Supported tokens:
 - ERC777 (only if it implements ERC20)
 - ERC1155
 
+# Setup
+
+You can use NPM to install the package:
+
+```bash
+$ npm install @pooltogether/loot-box@beta
+```
+
+Or you can find the address and ABIs on the [Networks](https://docs.pooltogether.com/networks) page of the PoolTogether documentation.
+
 # Usage
 
 There are two main smart contracts:
