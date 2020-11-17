@@ -6,7 +6,3 @@ export INFURA_API_KEY=''
 
 # Used for verifying contracts on Etherscan
 export ETHERSCAN_API_KEY=''
-
-export ERC721_NAME='PoolTogether Loot Box'
-export ERC721_SYMBOL='LOOTY'
-export ERC721_BASE_URI='https://erc721.pooltogether.com/'

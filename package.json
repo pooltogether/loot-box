@@ -1,7 +1,7 @@
 {
   "name": "@pooltogether/loot-box",
   "description": "Loot Boxes are Ethereum smart contracts that can be traded like NFTs and plundered by the owner.",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -28,7 +28,7 @@
     "buidler-gas-reporter": "^0.1.4",
     "chai": "^4.2.0",
     "deploy-eip-1820": "1.0.0",
-    "ethereum-waffle": "^3.1.1",
+    "ethereum-waffle": "^3.2",
     "ethers": "^5.0.14",
     "solc": "0.6.12",
     "solidity-coverage": "^0.7.11",

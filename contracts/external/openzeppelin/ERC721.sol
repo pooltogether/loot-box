@@ -10,6 +10,7 @@ import "@openzeppelin/contracts/introspection/ERC165.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/proxy/Initializable.sol";
 
 /**
  * @title ERC721 Non-Fungible Token Standard basic implementation
@@ -18,7 +19,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
  * NOTE: This is a modified version of the OpenZeppelin ERC721 contract.  ERC721Enumerable has been removed.
  *
  */
-contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
+contract ERC721 is Context, Initializable, ERC165, IERC721, IERC721Metadata {
     using SafeMath for uint256;
     using Address for address;
     using Strings for uint256;
@@ -79,7 +80,7 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
     /**
      * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
      */
-    constructor (string memory name, string memory symbol) public {
+    function initialize (string memory name, string memory symbol) public initializer {
         _name = name;
         _symbol = symbol;
 
