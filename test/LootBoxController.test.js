@@ -56,6 +56,12 @@ describe('LootBoxController', () => {
     let lootBoxControllerResult = await deployments.get('LootBoxController')
     lootBoxController = await buidler.ethers.getContractAt('LootBoxController', lootBoxControllerResult.address, wallet)
 
+
+  // insert equivilent erc20mintable, erc1155 erc721
+  let ERC20Mintable
+  let ERC20MintableResult = await deployments.get('ERC20Mintable')
+  ERC20Mintable = await buidler.ethers.getContractAt('ERC20Mintable', ERC20MintableResult.address, wallet)
+
     lootBoxAddress = await lootBoxController.computeAddress(erc721Mintable.address, lootBoxTokenId)
 
     await wallet.sendTransaction({ to: lootBoxAddress, value: toWei('1') })
