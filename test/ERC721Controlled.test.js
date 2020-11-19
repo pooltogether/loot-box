@@ -12,6 +12,7 @@ describe('ERC721Controlled', () => {
   let provider
 
   let token
+  let createdERC721
 
   beforeEach(async () => {
     [wallet, wallet2] = await buidler.ethers.getSigners()
@@ -27,12 +28,18 @@ describe('ERC721Controlled', () => {
     factory = await buidler.ethers.getContractAt('ERC721ControlledFactory', factoryResult.address, wallet)
 
     let tokenAddress = await factory.computeAddress(wallet._address)
-    await factory.createERC721Controlled(
+    createdERC721 = await factory.createERC721Controlled(
       'NAME',
       'SYMBOL',
       'BASE_URI'
     )
     token = await buidler.ethers.getContractAt('ERC721Controlled', tokenAddress, wallet)
+  })
+
+  describe('factory', ()=>{
+    it('emits an ERC721ControlledCreated event', async () => {
+      await expect(factory.createERC721Controlled("test","test", "test")).to.emit(factory, 'ERC721ControlledCreated')
+    })
   })
 
   describe('deployer', () => {

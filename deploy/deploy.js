@@ -11,8 +11,10 @@ module.exports = async (buidler) => {
 
   await deploy1820(signer)
 
+  debug({ deployer })
+
   if(isTest){
-    console.log("deploying mintable contracts")
+    console.log("Test Env: deploying mintable contracts")
     await deploy('ERC20Mintable',{
       from: deployer,
       skipIfAlreadyDeployed: true,
@@ -39,7 +41,7 @@ module.exports = async (buidler) => {
     )
   }
 
-  debug({ deployer })
+  
 
   await deploy('LootBoxController', {
     from: deployer,
