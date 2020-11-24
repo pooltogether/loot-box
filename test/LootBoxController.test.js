@@ -56,7 +56,7 @@ describe('LootBoxController', () => {
     erc1155MintableDeploy = await deployments.get('ERC1155Mintable')
     erc1155Mintable = await buidler.ethers.getContractAt('ERC1155Mintable', erc1155MintableDeploy.address, wallet)
 
-    lootBox = await deployContract(wallet, LootBox, []) // do we want to deploy here or in deloy.js
+    lootBox = await deployContract(wallet, LootBox, [])
 
     // Make sure wallet controls loot box
     await erc721Mintable.mint(wallet._address, lootBoxTokenId)
