@@ -44,10 +44,18 @@ describe('LootBoxController', () => {
 
     await deployments.fixture()
 
-    erc20Mintable = await deployContract(wallet, ERC20Mintable, ['test', 'test'])
-    erc721Mintable = await deployContract(wallet, ERC721Mintable, ['test', 'test', 'hello.com'])
-    erc777Mintable = await deployContract(wallet, ERC777Mintable, ['test', 'test', []])
-    erc1155Mintable = await deployContract(wallet, ERC1155Mintable, ['https://hello.com'])
+    erc20MintableDeploy = await deployments.get('ERC20Mintable')
+    erc20Mintable = await buidler.ethers.getContractAt('ERC20Mintable', erc20MintableDeploy.address, wallet)
+    
+    erc721MintableDeploy = await deployments.get('ERC721Mintable')
+    erc721Mintable = await buidler.ethers.getContractAt('ERC721Mintable', erc721MintableDeploy.address, wallet)
+
+    erc777MintableDeploy = await deployments.get('ERC777Mintable')
+    erc777Mintable = await buidler.ethers.getContractAt('ERC777Mintable', erc777MintableDeploy.address, wallet)
+  
+    erc1155MintableDeploy = await deployments.get('ERC1155Mintable')
+    erc1155Mintable = await buidler.ethers.getContractAt('ERC1155Mintable', erc1155MintableDeploy.address, wallet)
+
     lootBox = await deployContract(wallet, LootBox, [])
 
     // Make sure wallet controls loot box
@@ -57,7 +65,7 @@ describe('LootBoxController', () => {
     lootBoxController = await buidler.ethers.getContractAt('LootBoxController', lootBoxControllerResult.address, wallet)
 
     lootBoxAddress = await lootBoxController.computeAddress(erc721Mintable.address, lootBoxTokenId)
-
+  
     await wallet.sendTransaction({ to: lootBoxAddress, value: toWei('1') })
     await erc721Mintable.mint(lootBoxAddress, tokenId)
     await erc20Mintable.mint(lootBoxAddress, toWei('42'))

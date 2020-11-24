@@ -9,6 +9,7 @@
     "compile": "buidler --show-stack-traces --max-memory 8192 compile",
     "console": "buidler console --network",
     "deploy": "buidler deploy --write true --network",
+    "start": "echo 'Starting node for local testing....\n'; rm -rf deployments/localhost_31337; buidler node",
     "start-gas": "echo 'Starting node for gas testing....\n'; rm -rf deployments/localhost_31337; buidler node",
     "gas": "OPTIMIZER_ENABLED=true REPORT_GAS=true buidler test --network localhost",
     "test": "buidler test",

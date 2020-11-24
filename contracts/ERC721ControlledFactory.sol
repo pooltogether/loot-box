@@ -13,6 +13,10 @@ import "./ERC721Controlled.sol";
 contract ERC721ControlledFactory {
   using SafeMath for uint256;
 
+
+  /// @notice Emitted when a ERC721Controlled is created
+  event ERC721ControlledCreated(address indexed token);
+
   /// @notice The instance of the ERC721Controlled that the minimal proxies will point to
   ERC721Controlled public erc721ControlledInstance;
   bytes internal erc721ControlledBytecode;
@@ -35,7 +39,7 @@ contract ERC721ControlledFactory {
   }
 
   /// @notice Creates an ERC721Controlled contract
-  /// @return The address of the newly created LootBox.
+  /// @return The address of the newly created ERC721Controlled
   function createERC721Controlled(
     string memory name,
     string memory symbol,
@@ -44,6 +48,7 @@ contract ERC721ControlledFactory {
     ERC721Controlled result = ERC721Controlled(payable(Create2.deploy(0, _salt(msg.sender), erc721ControlledBytecode)));
     nonces[msg.sender] = nonces[msg.sender].add(1);
     result.initialize(name, symbol, baseURI, msg.sender);
+    emit ERC721ControlledCreated(address(result));
     return result;
   }
 
