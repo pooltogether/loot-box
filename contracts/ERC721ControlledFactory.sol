@@ -15,7 +15,7 @@ contract ERC721ControlledFactory {
 
 
   /// @notice Emitted when a ERC721Controlled is created
-  event ERC721ControlledCreated(address);
+  event ERC721ControlledCreated(address indexed token);
 
   /// @notice The instance of the ERC721Controlled that the minimal proxies will point to
   ERC721Controlled public erc721ControlledInstance;
