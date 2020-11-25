@@ -7,13 +7,14 @@ module.exports = async (buidler) => {
   const { deployer } = await getNamedAccounts()
   const signer = await ethers.provider.getSigner(deployer)
 
-  const isTest = (await ethers.provider.getNetwork()).chainId == 31337;
+  const chainId = (await ethers.provider.getNetwork()).chainId
+  const isTestOrCoverage =  chainId == 31337 || chainId == 1337;
 
   await deploy1820(signer)
 
   debug({ deployer })
 
-  if(isTest){
+  if(isTestOrCoverage){
     console.log("Test Env: deploying mintable contracts")
     await deploy('ERC20Mintable',{
       from: deployer,

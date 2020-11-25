@@ -14,7 +14,7 @@
     "gas": "OPTIMIZER_ENABLED=true REPORT_GAS=true buidler test --network localhost",
     "test": "buidler test",
     "fork-test": "buidler --network fork run ./scripts/fork-test.js",
-    "coverage": "yarn clean && USE_LITERAL_CONTENT=false buidler coverage --network coverage --temp artifacts",
+    "coverage": "yarn clean && yarn compile && USE_LITERAL_CONTENT=false buidler coverage --network coverage --temp artifacts",
     "verify": "buidler etherscan-verify --license MIT --solc-input --api-key $ETHERSCAN_API_KEY --network",
     "prepack": "yarn clean && buidler compile && truffle-extract -b artifacts -o abis",
     "postpublish": "PACKAGE_VERSION=$(./scripts/package-version.sh) && git tag -ae v$PACKAGE_VERSION && git push --tags",

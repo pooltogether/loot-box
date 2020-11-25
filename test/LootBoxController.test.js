@@ -1,12 +1,7 @@
 const { expect } = require("chai");
 const buidler = require('@nomiclabs/buidler')
-const ERC20Mintable = require('../artifacts/ERC20Mintable')
-const ERC721Mintable = require('../artifacts/ERC721Mintable')
-const ERC777Mintable = require('../artifacts/ERC777Mintable')
-const ERC1155Mintable = require('../artifacts/ERC1155Mintable')
 const LootBox = require('../artifacts/LootBox')
 const { deployContract } = require('ethereum-waffle')
-const { deploy1820 } = require('deploy-eip-1820')
 
 const { ethers, deployments } = buidler;
 
