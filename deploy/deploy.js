@@ -15,7 +15,6 @@ module.exports = async (buidler) => {
   debug({ deployer })
 
   if(isTestOrCoverage){
-    console.log("Test Env: deploying mintable contracts")
     await deploy('ERC20Mintable',{
       from: deployer,
       skipIfAlreadyDeployed: true,

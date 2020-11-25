@@ -46,6 +46,15 @@ contract LootBox {
   /// @notice Emitted when the contract transfer ether
   event TransferredEther(address indexed to, uint256 amount);
 
+  /// @notice Whether or not this instance can be destroyed
+  bool public indestructible;
+
+  constructor (bool _indestructible) public {
+    if (_indestructible) {
+      indestructible = true;
+    }
+  }
+
   /// @notice Executes calls on behalf of this contract.
   /// @param calls The array of calls to be executed.
   /// @return An array of the return values for each of the calls
@@ -85,7 +94,7 @@ contract LootBox {
 
   /// @notice Destroys this contract using `selfdestruct`
   /// @param to The address to send remaining Ether to
-  function destroy(address payable to) external {
+  function destroy(address payable to) external onlyDestructible {
     selfdestruct(to);
   }
 
@@ -136,4 +145,8 @@ contract LootBox {
     }
   }
 
+  modifier onlyDestructible {
+    require(indestructible == false, "LootBox/is-indestructible");
+    _;
+  }
 }

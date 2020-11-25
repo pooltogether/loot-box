@@ -14,8 +14,10 @@ import "./LootBox.sol";
 /// plundered by transferring token balances to the ERC721 owner.
 contract LootBoxController {
 
-  LootBox internal lootBoxActionInstance;
-  bytes internal lootBoxActionBytecode;
+  /// @notice The instance to which all proxies will point
+  LootBox public lootBoxInstance;
+
+  bytes internal lootBoxBytecode;
 
   /// @notice Emitted when a Loot Box is plundered
   event Plundered(address indexed erc721, uint256 indexed tokenId, address indexed operator);
@@ -26,8 +28,8 @@ contract LootBoxController {
   /// @notice Constructs a new controller.
   /// @dev Creates a new LootBox instance and an associated minimal proxy.
   constructor () public {
-    lootBoxActionInstance = new LootBox();
-    lootBoxActionBytecode = MinimalProxyLibrary.minimalProxy(address(lootBoxActionInstance));
+    lootBoxInstance = new LootBox(true);
+    lootBoxBytecode = MinimalProxyLibrary.minimalProxy(address(lootBoxInstance));
   }
 
   /// @notice Computes the Loot Box address for a given ERC721 token.
@@ -36,7 +38,7 @@ contract LootBoxController {
   /// @param tokenId The ERC721 token id
   /// @return The address of the Loot Box.
   function computeAddress(address erc721, uint256 tokenId) external view returns (address) {
-    return Create2.computeAddress(_salt(erc721, tokenId), keccak256(lootBoxActionBytecode));
+    return Create2.computeAddress(_salt(erc721, tokenId), keccak256(lootBoxBytecode));
   }
 
   /// @notice Allows anyone to transfer all given tokens in a Loot Box to the associated ERC721 owner.
@@ -54,9 +56,9 @@ contract LootBoxController {
     LootBox.WithdrawERC1155[] calldata erc1155s
   ) external {
     address payable owner = payable(IERC721(erc721).ownerOf(tokenId));
-    LootBox lootBoxAction = _createLootBox(erc721, tokenId);
-    lootBoxAction.plunder(erc20s, erc721s, erc1155s, owner);
-    lootBoxAction.destroy(owner);
+    LootBox lootBox = _createLootBox(erc721, tokenId);
+    lootBox.plunder(erc20s, erc721s, erc1155s, owner);
+    lootBox.destroy(owner);
 
     emit Plundered(erc721, tokenId, msg.sender);
   }
@@ -74,9 +76,9 @@ contract LootBoxController {
   ) external returns (bytes[] memory) {
     address payable owner = payable(IERC721(erc721).ownerOf(tokenId));
     require(msg.sender == owner, "LootBoxController/only-owner");
-    LootBox lootBoxAction = _createLootBox(erc721, tokenId);
-    bytes[] memory result = lootBoxAction.executeCalls(calls);
-    lootBoxAction.destroy(owner);
+    LootBox lootBox = _createLootBox(erc721, tokenId);
+    bytes[] memory result = lootBox.executeCalls(calls);
+    lootBox.destroy(owner);
 
     emit Executed(erc721, tokenId, msg.sender);
 
@@ -88,7 +90,7 @@ contract LootBoxController {
   /// @param tokenId The ERC721 token id
   /// @return The address of the newly created LootBox.
   function _createLootBox(address erc721, uint256 tokenId) internal returns (LootBox) {
-    return LootBox(payable(Create2.deploy(0, _salt(erc721, tokenId), lootBoxActionBytecode)));
+    return LootBox(payable(Create2.deploy(0, _salt(erc721, tokenId), lootBoxBytecode)));
   }
 
   /// @notice Computes the CREATE2 salt for the given ERC721 token.

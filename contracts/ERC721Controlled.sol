@@ -2,7 +2,7 @@
 
 pragma solidity ^0.6.12;
 
-import "./external/openzeppelin/ERC721.sol";
+import "./ERC721.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /// @title An ownable ERC721

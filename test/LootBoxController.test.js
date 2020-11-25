@@ -68,6 +68,14 @@ describe('LootBoxController', () => {
     await erc777Mintable.mint(lootBoxAddress, toWei('1234'), [], [])
   })
 
+  describe('destroy()', async () => {
+    it('should not allow anyone to destroy the global instance', async () => {
+      let lootBoxInstanceAddress = await lootBoxController.lootBoxInstance()
+      let lootBox = await buidler.ethers.getContractAt('LootBox', lootBoxInstanceAddress, wallet)
+      await expect(lootBox.destroy(wallet._address)).to.be.revertedWith('LootBox/is-indestructible')
+    })
+  })
+
   describe('executeCalls()', async () => {
     it('should allow the erc721 owner to execute any calls', async () => {
       const data = (await erc721Mintable.populateTransaction.transferFrom(lootBoxAddress, wallet._address, tokenId)).data
