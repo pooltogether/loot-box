@@ -86,6 +86,7 @@ contract LootBox {
     WithdrawERC1155[] memory erc1155,
     address payable to
   ) external {
+    require(to != address(0), "LootBox/non-zero-to");
     _withdrawERC20(erc20, to);
     _withdrawERC721(erc721, to);
     _withdrawERC1155(erc1155, to);
