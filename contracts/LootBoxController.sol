@@ -28,7 +28,8 @@ contract LootBoxController {
   /// @notice Constructs a new controller.
   /// @dev Creates a new LootBox instance and an associated minimal proxy.
   constructor () public {
-    lootBoxInstance = new LootBox(true);
+    lootBoxInstance = new LootBox();
+    lootBoxInstance.initialize();
     lootBoxBytecode = MinimalProxyLibrary.minimalProxy(address(lootBoxInstance));
   }
 
@@ -90,7 +91,9 @@ contract LootBoxController {
   /// @param tokenId The ERC721 token id
   /// @return The address of the newly created LootBox.
   function _createLootBox(address erc721, uint256 tokenId) internal returns (LootBox) {
-    return LootBox(payable(Create2.deploy(0, _salt(erc721, tokenId), lootBoxBytecode)));
+    LootBox lootBox = LootBox(payable(Create2.deploy(0, _salt(erc721, tokenId), lootBoxBytecode)));
+    lootBox.initialize();
+    return lootBox;
   }
 
   /// @notice Computes the CREATE2 salt for the given ERC721 token.
