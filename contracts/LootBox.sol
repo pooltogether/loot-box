@@ -69,7 +69,7 @@ contract LootBox {
   /// @notice Transfers ether held by the contract to another account
   /// @param to The account to transfer Ether to
   /// @param amount The amount of Ether to transfer
-  function transferEther(address payable to, uint256 amount) public {
+  function _transferEther(address payable to, uint256 amount) internal {
     to.transfer(amount);
 
     emit TransferredEther(to, amount);
@@ -90,7 +90,7 @@ contract LootBox {
     _withdrawERC20(erc20, to);
     _withdrawERC721(erc721, to);
     _withdrawERC1155(erc1155, to);
-    transferEther(to, address(this).balance);
+    _transferEther(to, address(this).balance);
   }
 
   /// @notice Destroys this contract using `selfdestruct`
