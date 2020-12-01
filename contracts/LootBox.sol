@@ -3,6 +3,7 @@
 pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/utils/Create2.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
@@ -46,19 +47,17 @@ contract LootBox {
   /// @notice Emitted when the contract transfer ether
   event TransferredEther(address indexed to, uint256 amount);
 
-  /// @notice Whether or not this instance can be destroyed
-  bool public indestructible;
+  address private _owner;
 
-  constructor (bool _indestructible) public {
-    if (_indestructible) {
-      indestructible = true;
-    }
+  function initialize () public {
+    require(_owner == address(0), "LootBox/already-init");
+    _owner = msg.sender;
   }
 
   /// @notice Executes calls on behalf of this contract.
   /// @param calls The array of calls to be executed.
   /// @return An array of the return values for each of the calls
-  function executeCalls(Call[] calldata calls) external returns (bytes[] memory) {
+  function executeCalls(Call[] calldata calls) external onlyOwner returns (bytes[] memory) {
     bytes[] memory response = new bytes[](calls.length);
     for (uint256 i = 0; i < calls.length; i++) {
       response[i] = _executeCall(calls[i].to, calls[i].value, calls[i].data);
@@ -85,7 +84,7 @@ contract LootBox {
     WithdrawERC721[] memory erc721,
     WithdrawERC1155[] memory erc1155,
     address payable to
-  ) external {
+  ) external onlyOwner {
     require(to != address(0), "LootBox/non-zero-to");
     _withdrawERC20(erc20, to);
     _withdrawERC721(erc721, to);
@@ -95,7 +94,8 @@ contract LootBox {
 
   /// @notice Destroys this contract using `selfdestruct`
   /// @param to The address to send remaining Ether to
-  function destroy(address payable to) external onlyDestructible {
+  function destroy(address payable to) external onlyOwner {
+    delete _owner;
     selfdestruct(to);
   }
 
@@ -146,8 +146,8 @@ contract LootBox {
     }
   }
 
-  modifier onlyDestructible {
-    require(indestructible == false, "LootBox/is-indestructible");
+  modifier onlyOwner {
+    require(msg.sender == _owner, "LootBox/only-owner");
     _;
   }
 }

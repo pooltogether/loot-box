@@ -72,7 +72,7 @@ describe('LootBoxController', () => {
     it('should not allow anyone to destroy the global instance', async () => {
       let lootBoxInstanceAddress = await lootBoxController.lootBoxInstance()
       let lootBox = await buidler.ethers.getContractAt('LootBox', lootBoxInstanceAddress, wallet)
-      await expect(lootBox.destroy(wallet._address)).to.be.revertedWith('LootBox/is-indestructible')
+      await expect(lootBox.destroy(wallet._address)).to.be.revertedWith('LootBox/only-owner')
     })
   })
 
