@@ -91,7 +91,7 @@ contract LootBoxController {
   /// @param tokenId The ERC721 token id
   /// @return The address of the newly created LootBox.
   function _createLootBox(address erc721, uint256 tokenId) internal returns (LootBox) {
-    LootBox lootBox = LootBox(payable(Create2.deploy(0, _salt(erc721, tokenId), lootBoxBytecode)));
+    LootBox lootBox = LootBox(Create2.deploy(0, _salt(erc721, tokenId), lootBoxBytecode));
     lootBox.initialize();
     return lootBox;
   }
