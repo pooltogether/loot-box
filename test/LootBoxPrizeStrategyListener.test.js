@@ -37,9 +37,9 @@ describe('LootBoxPrizeStrategyListener', () => {
     })
   })
 
-  describe('afterDistributeAwards()', () => {
+  describe('afterPrizePoolAwarded()', () => {
     it('should do nothing if there is no token configured', async () => {
-      await prizeStrategy.call(listener, 'afterDistributeAwards', '0', '0');
+      await prizeStrategy.call(listener, 'afterPrizePoolAwarded', '0', '0');
     })
 
     it('should mint a new ERC721 if configured', async () => {
@@ -50,7 +50,7 @@ describe('LootBoxPrizeStrategyListener', () => {
       /// Ensure call succeeds
       await token.mock.mint.withArgs(wallet._address).returns(82)
       await prizeStrategy.mock.addExternalErc721Award.withArgs(token.address, [82]).returns()
-      await prizeStrategy.call(listener, 'afterDistributeAwards', '0', '0');
+      await prizeStrategy.call(listener, 'afterPrizePoolAwarded', '0', '0');
     })
   })
 

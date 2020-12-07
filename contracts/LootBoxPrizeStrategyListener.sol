@@ -5,11 +5,14 @@ pragma solidity >=0.6.0 <0.7.0;
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 import "./ERC721Controlled.sol";
-import "./external/pooltogether/PeriodicPrizeStrategyListener.sol";
+import "./external/pooltogether/PeriodicPrizeStrategyListenerInterface.sol";
 import "./external/pooltogether/PeriodicPrizeStrategyInterface.sol";
 
 /// @title Allows a PrizeStrategy to automatically create a new ERC721 after the award
-contract LootBoxPrizeStrategyListener is AccessControl {
+contract LootBoxPrizeStrategyListener is AccessControl, PeriodicPrizeStrategyListenerInterface {
+
+  bytes4 private constant ERC165_INTERFACE_ID_PERIODIC_PRIZE_STRATEGY_LISTENER = 0x575072c6;
+  bytes4 private constant ERC165_INTERFACE_ID_ERC165 = 0x01ffc9a7;
 
   event ERC721ControlledSet(address prizeStrategy, address erc721Controlled);
 
@@ -19,7 +22,7 @@ contract LootBoxPrizeStrategyListener is AccessControl {
     _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
   }
 
-  function afterDistributeAwards(uint256, uint256) external {
+  function afterPrizePoolAwarded(uint256, uint256) external override {
     ERC721Controlled erc721Controlled = erc721ControlledTokens[msg.sender];
     if (address(erc721Controlled) == address(0)) {
       return;
@@ -35,6 +38,13 @@ contract LootBoxPrizeStrategyListener is AccessControl {
     erc721ControlledTokens[prizeStrategy] = _erc721Controlled;
 
     emit ERC721ControlledSet(prizeStrategy, address(_erc721Controlled));
+  }
+
+  function supportsInterface(bytes4 interfaceId) external override view returns (bool) {
+    return (
+      interfaceId == ERC165_INTERFACE_ID_ERC165 ||
+      interfaceId == ERC165_INTERFACE_ID_PERIODIC_PRIZE_STRATEGY_LISTENER
+    );
   }
 
   modifier onlyAdmin() {
