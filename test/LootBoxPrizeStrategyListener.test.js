@@ -1,10 +1,10 @@
 const { expect } = require("chai");
 const buidler = require('@nomiclabs/buidler')
 const { deployMockContract } = require('ethereum-waffle')
-const PeriodicPrizeStrategyInterface = require('../artifacts/PeriodicPrizeStrategyInterface.json')
+const PeriodicPrizeStrategy = require('../artifacts/PeriodicPrizeStrategy.json')
 const ERC721Controlled = require('../artifacts/ERC721Controlled.json')
 
-const { ethers, deployments } = buidler;
+const { deployments } = buidler;
 
 const debug = require('debug')('loot-box:LootBoxPrizeStrategyListener.test')
 
@@ -25,7 +25,7 @@ describe('LootBoxPrizeStrategyListener', () => {
     let listenerResult = await deployments.get('LootBoxPrizeStrategyListener')
     listener = await buidler.ethers.getContractAt('LootBoxPrizeStrategyListener', listenerResult.address, wallet)
 
-    prizeStrategy = await deployMockContract(wallet, PeriodicPrizeStrategyInterface.abi)
+    prizeStrategy = await deployMockContract(wallet, PeriodicPrizeStrategy.abi)
     // pretend wallet is the prize pool
     await prizeStrategy.mock.prizePool.returns(wallet._address)
     token = await deployMockContract(wallet, ERC721Controlled.abi)

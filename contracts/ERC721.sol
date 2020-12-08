@@ -2,15 +2,14 @@
 
 pragma solidity ^0.6.0;
 
-import "@openzeppelin/contracts/GSN/Context.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Metadata.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/introspection/ERC165.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/proxy/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/GSN/ContextUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721MetadataUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/introspection/ERC165Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/math/SafeMathUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 
 /**
  * @title ERC721 Non-Fungible Token Standard basic implementation
@@ -19,10 +18,10 @@ import "@openzeppelin/contracts/proxy/Initializable.sol";
  * NOTE: This is a modified version of the OpenZeppelin ERC721 contract.  ERC721Enumerable has been removed.
  *
  */
-contract ERC721 is Context, Initializable, ERC165, IERC721, IERC721Metadata {
-    using SafeMath for uint256;
-    using Address for address;
-    using Strings for uint256;
+contract ERC721 is ContextUpgradeable, ERC165Upgradeable, IERC721Upgradeable, IERC721MetadataUpgradeable {
+    using SafeMathUpgradeable for uint256;
+    using AddressUpgradeable for address;
+    using StringsUpgradeable for uint256;
 
     // Equals to `bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"))`
     // which can be also obtained as `IERC721Receiver(0).onERC721Received.selector`
@@ -405,7 +404,7 @@ contract ERC721 is Context, Initializable, ERC165, IERC721, IERC721Metadata {
             return true;
         }
         bytes memory returndata = to.functionCall(abi.encodeWithSelector(
-            IERC721Receiver(to).onERC721Received.selector,
+            IERC721ReceiverUpgradeable(to).onERC721Received.selector,
             _msgSender(),
             from,
             tokenId,

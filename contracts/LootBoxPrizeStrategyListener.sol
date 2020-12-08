@@ -3,16 +3,13 @@
 pragma solidity >=0.6.0 <0.7.0;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@pooltogether/pooltogether-contracts/contracts/prize-strategy/PeriodicPrizeStrategy.sol";
+import "@pooltogether/pooltogether-contracts/contracts/prize-strategy/PeriodicPrizeStrategyListener.sol";
 
 import "./ERC721Controlled.sol";
-import "./external/pooltogether/PeriodicPrizeStrategyListenerInterface.sol";
-import "./external/pooltogether/PeriodicPrizeStrategyInterface.sol";
 
 /// @title Allows a PrizeStrategy to automatically create a new ERC721 after the award
-contract LootBoxPrizeStrategyListener is AccessControl, PeriodicPrizeStrategyListenerInterface {
-
-  bytes4 private constant ERC165_INTERFACE_ID_PERIODIC_PRIZE_STRATEGY_LISTENER = 0x575072c6;
-  bytes4 private constant ERC165_INTERFACE_ID_ERC165 = 0x01ffc9a7;
+contract LootBoxPrizeStrategyListener is AccessControl, PeriodicPrizeStrategyListener {
 
   event ERC721ControlledSet(address prizeStrategy, address erc721Controlled);
 
@@ -27,10 +24,10 @@ contract LootBoxPrizeStrategyListener is AccessControl, PeriodicPrizeStrategyLis
     if (address(erc721Controlled) == address(0)) {
       return;
     }
-    PeriodicPrizeStrategyInterface prizeStrategy = PeriodicPrizeStrategyInterface(msg.sender);
+    PeriodicPrizeStrategy prizeStrategy = PeriodicPrizeStrategy(msg.sender);
     uint256[] memory tokenIds = new uint256[](1);
-    tokenIds[0] = erc721Controlled.mint(prizeStrategy.prizePool());
-    prizeStrategy.addExternalErc721Award(address(erc721Controlled), tokenIds);
+    tokenIds[0] = erc721Controlled.mint(address(prizeStrategy.prizePool()));
+    prizeStrategy.addExternalErc721Award(erc721Controlled, tokenIds);
   }
 
   function setERC721Controlled(address prizeStrategy, ERC721Controlled _erc721Controlled) external onlyAdmin {
@@ -38,13 +35,6 @@ contract LootBoxPrizeStrategyListener is AccessControl, PeriodicPrizeStrategyLis
     erc721ControlledTokens[prizeStrategy] = _erc721Controlled;
 
     emit ERC721ControlledSet(prizeStrategy, address(_erc721Controlled));
-  }
-
-  function supportsInterface(bytes4 interfaceId) external override view returns (bool) {
-    return (
-      interfaceId == ERC165_INTERFACE_ID_ERC165 ||
-      interfaceId == ERC165_INTERFACE_ID_PERIODIC_PRIZE_STRATEGY_LISTENER
-    );
   }
 
   modifier onlyAdmin() {

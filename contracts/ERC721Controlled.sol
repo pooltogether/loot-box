@@ -3,12 +3,12 @@
 pragma solidity ^0.6.12;
 
 import "./ERC721.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
 /// @title An ownable ERC721
 /// @author Brendan Asselstine
 /// @notice The owner may change the base URI
-contract ERC721Controlled is ERC721, AccessControl {
+contract ERC721Controlled is ERC721, AccessControlUpgradeable {
 
   /// @notice Emitted when the token is constructed
   event ERC721ControlledInitialized(
