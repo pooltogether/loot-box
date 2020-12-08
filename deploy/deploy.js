@@ -41,8 +41,6 @@ module.exports = async (buidler) => {
     )
   }
 
-  
-
   await deploy('LootBoxController', {
     from: deployer,
     skipIfAlreadyDeployed: true
@@ -53,7 +51,7 @@ module.exports = async (buidler) => {
     skipIfAlreadyDeployed: true
   })
 
-  await deploy('LootBoxPrizeStrategyListener', {
+  await deploy('LootBoxPrizeStrategyListenerFactory', {
     from: deployer,
     skipIfAlreadyDeployed: true
   })

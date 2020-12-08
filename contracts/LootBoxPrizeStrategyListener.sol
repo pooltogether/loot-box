@@ -3,20 +3,21 @@
 pragma solidity >=0.6.0 <0.7.0;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
 import "@pooltogether/pooltogether-contracts/contracts/prize-strategy/PeriodicPrizeStrategy.sol";
 import "@pooltogether/pooltogether-contracts/contracts/prize-strategy/PeriodicPrizeStrategyListener.sol";
 
 import "./ERC721Controlled.sol";
 
 /// @title Allows a PrizeStrategy to automatically create a new ERC721 after the award
-contract LootBoxPrizeStrategyListener is AccessControl, PeriodicPrizeStrategyListener {
+contract LootBoxPrizeStrategyListener is Initializable, AccessControl, PeriodicPrizeStrategyListener {
 
   event ERC721ControlledSet(address prizeStrategy, address erc721Controlled);
 
   mapping(address => ERC721Controlled) public erc721ControlledTokens;
 
-  constructor () public {
-    _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+  function initialize (address admin) public initializer {
+    _setupRole(DEFAULT_ADMIN_ROLE, admin);
   }
 
   function afterPrizePoolAwarded(uint256, uint256) external override {

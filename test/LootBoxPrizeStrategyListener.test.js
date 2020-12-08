@@ -3,6 +3,7 @@ const buidler = require('@nomiclabs/buidler')
 const { deployMockContract } = require('ethereum-waffle')
 const PeriodicPrizeStrategy = require('../artifacts/PeriodicPrizeStrategy.json')
 const ERC721Controlled = require('../artifacts/ERC721Controlled.json')
+const { parseTx } = require('./helpers/parse')
 
 const { deployments } = buidler;
 
@@ -22,8 +23,14 @@ describe('LootBoxPrizeStrategyListener', () => {
 
     await deployments.fixture()
 
-    let listenerResult = await deployments.get('LootBoxPrizeStrategyListener')
-    listener = await buidler.ethers.getContractAt('LootBoxPrizeStrategyListener', listenerResult.address, wallet)
+    let listenerFactoryResult = await deployments.get('LootBoxPrizeStrategyListenerFactory')
+    listenerFactory = await buidler.ethers.getContractAt('LootBoxPrizeStrategyListenerFactory', listenerFactoryResult.address, wallet)
+
+    let tx = await listenerFactory.create(wallet._address);
+    let events = await parseTx(listenerFactory, tx)
+    let created = events.find(event => event.name == 'CreatedListener')
+    
+    listener = await buidler.ethers.getContractAt('LootBoxPrizeStrategyListener', created.args.listener, wallet)
 
     prizeStrategy = await deployMockContract(wallet, PeriodicPrizeStrategy.abi)
     // pretend wallet is the prize pool
