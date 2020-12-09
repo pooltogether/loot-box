@@ -87,4 +87,12 @@ describe('ERC721Controlled', () => {
     })
   })
 
+  describe('supportsInterface()', () => {
+    it('should support ERC165', async () => {
+      await expect(token.supportsInterface('0x01ffc9a7')) /// ERC165 interface id
+      await expect(token.supportsInterface('0x80ac58cd')) /// ERC721 interface id
+      await expect(token.supportsInterface('0x5b5e139f')) /// ERC721Metadata interface id
+    })
+  })
+
 })

@@ -2,24 +2,13 @@ const { expect } = require("chai");
 const buidler = require('@nomiclabs/buidler')
 const LootBox = require('../artifacts/LootBox')
 const { deployContract } = require('ethereum-waffle')
+const { parseTx } = require('./helpers/parse')
 
 const { ethers, deployments } = buidler;
 
 const toWei = ethers.utils.parseEther
 
 const debug = require('debug')('loot-box:LootBoxController.test')
-
-const parseLogs = (contract, logs) => logs.reduce((events, log) => {
-  try {
-    events.push(contract.interface.parseLog(log))
-  } catch (e) {}
-  return events
-}, [])
-
-const parseTx = async (contract, tx) => {
-  let receipt = await contract.provider.getTransactionReceipt((await tx).hash)
-  return parseLogs(contract, receipt.logs)
-}
 
 describe('LootBoxController', () => {
 

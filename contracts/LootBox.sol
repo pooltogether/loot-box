@@ -3,10 +3,9 @@
 pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/utils/Create2.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol";
 
 /// @title Allows anyone to "loot" an address
 /// @author Brendan Asselstine
@@ -23,13 +22,13 @@ contract LootBox {
 
   /// @notice A structure to define ERC721 transfer contents
   struct WithdrawERC721 {
-    IERC721 token;
+    IERC721Upgradeable token;
     uint256[] tokenIds;
   }
 
   /// @notice A structure to define ERC1155 transfer contents
   struct WithdrawERC1155 {
-    IERC1155 token;
+    IERC1155Upgradeable token;
     uint256[] ids;
     uint256[] amounts;
     bytes data;
@@ -80,7 +79,7 @@ contract LootBox {
   /// @param erc1155 Array of WithdrawERC1155 structs whose tokens should be transferred
   /// @param to The address receiving all tokens
   function plunder(
-    IERC20[] memory erc20,
+    IERC20Upgradeable[] memory erc20,
     WithdrawERC721[] memory erc721,
     WithdrawERC1155[] memory erc1155,
     address payable to
@@ -113,7 +112,7 @@ contract LootBox {
   /// @notice Transfers the entire balance of ERC20s to an account
   /// @param tokens An array of ERC20 tokens to transfer out.  The balance of each will be transferred.
   /// @param to The recipient of the transfers
-  function _withdrawERC20(IERC20[] memory tokens, address to) internal {
+  function _withdrawERC20(IERC20Upgradeable[] memory tokens, address to) internal {
     for (uint256 i = 0; i < tokens.length; i++) {
       uint256 balance = tokens[i].balanceOf(address(this));
       tokens[i].transfer(to, balance);

@@ -2,9 +2,9 @@
 
 pragma solidity ^0.6.12;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 
-contract ERC721Mintable is ERC721 {
+contract ERC721Mintable is ERC721Upgradeable {
 
   event ERC721Initialized(
     string name,
@@ -16,7 +16,8 @@ contract ERC721Mintable is ERC721 {
     string memory name,
     string memory symbol,
     string memory baseURI_
-  ) public ERC721(name, symbol) {
+  ) public {
+    __ERC721_init(name, symbol);
     _setBaseURI(baseURI_);
 
     emit ERC721Initialized(name, symbol, baseURI_);

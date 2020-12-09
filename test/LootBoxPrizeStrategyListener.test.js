@@ -1,10 +1,11 @@
 const { expect } = require("chai");
 const buidler = require('@nomiclabs/buidler')
 const { deployMockContract } = require('ethereum-waffle')
-const PeriodicPrizeStrategyInterface = require('../artifacts/PeriodicPrizeStrategyInterface.json')
+const PeriodicPrizeStrategy = require('../artifacts/PeriodicPrizeStrategy.json')
 const ERC721Controlled = require('../artifacts/ERC721Controlled.json')
+const { parseTx } = require('./helpers/parse')
 
-const { ethers, deployments } = buidler;
+const { deployments } = buidler;
 
 const debug = require('debug')('loot-box:LootBoxPrizeStrategyListener.test')
 
@@ -22,10 +23,16 @@ describe('LootBoxPrizeStrategyListener', () => {
 
     await deployments.fixture()
 
-    let listenerResult = await deployments.get('LootBoxPrizeStrategyListener')
-    listener = await buidler.ethers.getContractAt('LootBoxPrizeStrategyListener', listenerResult.address, wallet)
+    let listenerFactoryResult = await deployments.get('LootBoxPrizeStrategyListenerFactory')
+    listenerFactory = await buidler.ethers.getContractAt('LootBoxPrizeStrategyListenerFactory', listenerFactoryResult.address, wallet)
 
-    prizeStrategy = await deployMockContract(wallet, PeriodicPrizeStrategyInterface.abi)
+    let tx = await listenerFactory.create(wallet._address);
+    let events = await parseTx(listenerFactory, tx)
+    let created = events.find(event => event.name == 'CreatedListener')
+    
+    listener = await buidler.ethers.getContractAt('LootBoxPrizeStrategyListener', created.args.listener, wallet)
+
+    prizeStrategy = await deployMockContract(wallet, PeriodicPrizeStrategy.abi)
     // pretend wallet is the prize pool
     await prizeStrategy.mock.prizePool.returns(wallet._address)
     token = await deployMockContract(wallet, ERC721Controlled.abi)
@@ -37,9 +44,9 @@ describe('LootBoxPrizeStrategyListener', () => {
     })
   })
 
-  describe('afterDistributeAwards()', () => {
+  describe('afterPrizePoolAwarded()', () => {
     it('should do nothing if there is no token configured', async () => {
-      await prizeStrategy.call(listener, 'afterDistributeAwards', '0', '0');
+      await prizeStrategy.call(listener, 'afterPrizePoolAwarded', '0', '0');
     })
 
     it('should mint a new ERC721 if configured', async () => {
@@ -50,7 +57,7 @@ describe('LootBoxPrizeStrategyListener', () => {
       /// Ensure call succeeds
       await token.mock.mint.withArgs(wallet._address).returns(82)
       await prizeStrategy.mock.addExternalErc721Award.withArgs(token.address, [82]).returns()
-      await prizeStrategy.call(listener, 'afterDistributeAwards', '0', '0');
+      await prizeStrategy.call(listener, 'afterPrizePoolAwarded', '0', '0');
     })
   })
 
