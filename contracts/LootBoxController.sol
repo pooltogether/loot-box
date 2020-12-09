@@ -3,7 +3,7 @@
 pragma solidity ^0.6.12;
 pragma experimental ABIEncoderV2;
 
-import "@openzeppelin/contracts/utils/Create2.sol";
+import "@openzeppelin/contracts-upgradeable/utils/Create2Upgradeable.sol";
 
 import "./external/pooltogether/MinimalProxyLibrary.sol";
 import "./LootBox.sol";
@@ -39,7 +39,7 @@ contract LootBoxController {
   /// @param tokenId The ERC721 token id
   /// @return The address of the Loot Box.
   function computeAddress(address erc721, uint256 tokenId) external view returns (address) {
-    return Create2.computeAddress(_salt(erc721, tokenId), keccak256(lootBoxBytecode));
+    return Create2Upgradeable.computeAddress(_salt(erc721, tokenId), keccak256(lootBoxBytecode));
   }
 
   /// @notice Allows anyone to transfer all given tokens in a Loot Box to the associated ERC721 owner.
@@ -52,11 +52,11 @@ contract LootBoxController {
   function plunder(
     address erc721,
     uint256 tokenId,
-    IERC20[] calldata erc20s,
+    IERC20Upgradeable[] calldata erc20s,
     LootBox.WithdrawERC721[] calldata erc721s,
     LootBox.WithdrawERC1155[] calldata erc1155s
   ) external {
-    address payable owner = payable(IERC721(erc721).ownerOf(tokenId));
+    address payable owner = payable(IERC721Upgradeable(erc721).ownerOf(tokenId));
     LootBox lootBox = _createLootBox(erc721, tokenId);
     lootBox.plunder(erc20s, erc721s, erc1155s, owner);
     lootBox.destroy(owner);
@@ -75,7 +75,7 @@ contract LootBoxController {
     uint256 tokenId,
     LootBox.Call[] calldata calls
   ) external returns (bytes[] memory) {
-    address payable owner = payable(IERC721(erc721).ownerOf(tokenId));
+    address payable owner = payable(IERC721Upgradeable(erc721).ownerOf(tokenId));
     require(msg.sender == owner, "LootBoxController/only-owner");
     LootBox lootBox = _createLootBox(erc721, tokenId);
     bytes[] memory result = lootBox.executeCalls(calls);
@@ -91,7 +91,7 @@ contract LootBoxController {
   /// @param tokenId The ERC721 token id
   /// @return The address of the newly created LootBox.
   function _createLootBox(address erc721, uint256 tokenId) internal returns (LootBox) {
-    LootBox lootBox = LootBox(Create2.deploy(0, _salt(erc721, tokenId), lootBoxBytecode));
+    LootBox lootBox = LootBox(Create2Upgradeable.deploy(0, _salt(erc721, tokenId), lootBoxBytecode));
     lootBox.initialize();
     return lootBox;
   }

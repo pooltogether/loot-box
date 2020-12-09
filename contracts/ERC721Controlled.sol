@@ -35,7 +35,7 @@ contract ERC721Controlled is ERC721, AccessControlUpgradeable {
     string memory baseURI,
     address admin
   ) public initializer {
-    ERC721.initialize(name, symbol);
+    __ERC721_init(name, symbol);
     __setBaseURI(baseURI);
     _setupRole(DEFAULT_ADMIN_ROLE, admin);
 

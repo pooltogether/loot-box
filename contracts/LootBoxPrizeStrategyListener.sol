@@ -2,7 +2,7 @@
 
 pragma solidity >=0.6.0 <0.7.0;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
 import "@pooltogether/pooltogether-contracts/contracts/prize-strategy/PeriodicPrizeStrategy.sol";
 import "@pooltogether/pooltogether-contracts/contracts/prize-strategy/PeriodicPrizeStrategyListener.sol";
@@ -10,7 +10,7 @@ import "@pooltogether/pooltogether-contracts/contracts/prize-strategy/PeriodicPr
 import "./ERC721Controlled.sol";
 
 /// @title Allows a PrizeStrategy to automatically create a new ERC721 after the award
-contract LootBoxPrizeStrategyListener is Initializable, AccessControl, PeriodicPrizeStrategyListener {
+contract LootBoxPrizeStrategyListener is Initializable, AccessControlUpgradeable, PeriodicPrizeStrategyListener {
 
   event ERC721ControlledSet(address prizeStrategy, address erc721Controlled);
 

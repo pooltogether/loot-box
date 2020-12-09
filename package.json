@@ -36,8 +36,7 @@
     "truffle-extract": "pooltogether/truffle-extract"
   },
   "dependencies": {
-    "@pooltogether/pooltogether-contracts": "3.1.0-beta.5",
-    "@opengsn/gsn": "2.0.1",
+    "@pooltogether/pooltogether-contracts": "3.1.0-beta.7",
     "ganache-cli": "^6.12.0",
     "mocha-junit-reporter": "^2.0.0"
   },

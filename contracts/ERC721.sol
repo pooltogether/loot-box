@@ -79,9 +79,15 @@ contract ERC721 is ContextUpgradeable, ERC165Upgradeable, IERC721Upgradeable, IE
     /**
      * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
      */
-    function initialize (string memory name, string memory symbol) public initializer {
-        _name = name;
-        _symbol = symbol;
+    function __ERC721_init(string memory name_, string memory symbol_) internal initializer {
+        __Context_init_unchained();
+        __ERC165_init_unchained();
+        __ERC721_init_unchained(name_, symbol_);
+    }
+
+    function __ERC721_init_unchained(string memory name_, string memory symbol_) internal initializer {
+        _name = name_;
+        _symbol = symbol_;
 
         // register the supported interfaces to conform to ERC721 via ERC165
         _registerInterface(_INTERFACE_ID_ERC721);
