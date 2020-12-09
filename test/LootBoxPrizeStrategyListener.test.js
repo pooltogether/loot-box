@@ -78,6 +78,12 @@ describe('LootBoxPrizeStrategyListener', () => {
 
       expect(await listener.erc721ControlledTokens(prizeStrategy.address)).to.equal(token.address)
     })
+
+    it('should be able to zero out the address', async () => {
+      await listener.setERC721Controlled(prizeStrategy.address, ethers.constants.AddressZero)
+
+      expect(await listener.erc721ControlledTokens(prizeStrategy.address)).to.equal(ethers.constants.AddressZero)
+    })
   })
 
 })

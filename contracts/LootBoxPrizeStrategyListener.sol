@@ -32,7 +32,10 @@ contract LootBoxPrizeStrategyListener is Initializable, AccessControlUpgradeable
   }
 
   function setERC721Controlled(address prizeStrategy, ERC721Controlled _erc721Controlled) external onlyAdmin {
-    require(_erc721Controlled.hasRole(DEFAULT_ADMIN_ROLE, address(this)), "LootBoxPrizeStrategyListener/missing-admin-role");
+    require(
+      address(_erc721Controlled) == address(0) || _erc721Controlled.hasRole(DEFAULT_ADMIN_ROLE, address(this)),
+      "LootBoxPrizeStrategyListener/missing-admin-role"
+    );
     erc721ControlledTokens[prizeStrategy] = _erc721Controlled;
 
     emit ERC721ControlledSet(prizeStrategy, address(_erc721Controlled));
