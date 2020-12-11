@@ -17,17 +17,14 @@ Supported tokens:
 You can use NPM to install the package:
 
 ```bash
-$ npm install @pooltogether/loot-box@beta
+$ npm install @pooltogether/loot-box
 ```
 
 Or you can find the address and ABIs on the [Networks](https://docs.pooltogether.com/networks) page of the PoolTogether documentation.
 
 # Usage
 
-There are two main smart contracts:
-
-- **LootBoxController**: A contract that associates an address with an ERC721 and allows anyone to "plunder" the address: withdrawing desired tokens to the ERC721 owner's address.
-- **LootBox**: A contract that allows anyone to execute arbitrary calls & withdraw tokens.  It is created and destroyed by the LootBoxController in a single transaction.
+**LootBoxController**: A contract that associates an address with an ERC721 and allows anyone to "plunder" the address: withdrawing desired tokens to the ERC721 owner's address.
 
 The user flow is like so:
 
