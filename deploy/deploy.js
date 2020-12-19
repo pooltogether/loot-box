@@ -8,13 +8,14 @@ module.exports = async (buidler) => {
   const signer = await ethers.provider.getSigner(deployer)
 
   const chainId = (await ethers.provider.getNetwork()).chainId
+  const isRinkeby = chainId == 4
   const isTestOrCoverage =  chainId == 31337 || chainId == 1337;
 
   await deploy1820(signer)
 
   debug({ deployer })
 
-  if(isTestOrCoverage){
+  if(isTestOrCoverage || isRinkeby){
     await deploy('ERC20Mintable',{
       from: deployer,
       skipIfAlreadyDeployed: true,
