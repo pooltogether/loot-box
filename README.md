@@ -3,7 +3,7 @@
 [![CircleCI](https://circleci.com/gh/pooltogether/loot-box.svg?style=svg)](https://circleci.com/gh/pooltogether/loot-box)
 [![Coverage Status](https://coveralls.io/repos/github/pooltogether/loot-box/badge.svg?branch=main)](https://coveralls.io/github/pooltogether/loot-box?branch=main)
 
-Loot Boxes are Ethereum smart contracts that can be traded like NFTs and plundered for tokens.
+Loot Boxes are special addresses that can be associated with an ERC721.  Only the NFT owner can withdraw tokens from the Loot Box address.
 
 Supported tokens:
 
