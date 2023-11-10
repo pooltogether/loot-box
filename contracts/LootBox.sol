@@ -113,7 +113,7 @@ contract LootBox {
   /// @param tokens An array of ERC20 tokens to transfer out.  The balance of each will be transferred.
   /// @param to The recipient of the transfers
   function _withdrawERC20(IERC20Upgradeable[] memory tokens, address to) internal {
-    for (uint256 i = 0; i < tokens.length; i++) {
+    for (uint256 i; i < tokens.length; ++i) {
       uint256 balance = tokens[i].balanceOf(address(this));
       tokens[i].transfer(to, balance);
 
@@ -125,8 +125,8 @@ contract LootBox {
   /// @param withdrawals An array of WithdrawERC721 structs that each include the ERC721 token to transfer and the corresponding token ids.
   /// @param to The recipient of the transfers
   function _withdrawERC721(WithdrawERC721[] memory withdrawals, address to) internal {
-    for (uint256 i = 0; i < withdrawals.length; i++) {
-      for (uint256 tokenIndex = 0; tokenIndex < withdrawals[i].tokenIds.length; tokenIndex++) {
+    for (uint256 i; i < withdrawals.length; i++) {
+      for (uint256 tokenIndex; tokenIndex < withdrawals[i].tokenIds.length; ++tokenIndex) {
         withdrawals[i].token.transferFrom(address(this), to, withdrawals[i].tokenIds[tokenIndex]);
       }
 
@@ -135,18 +135,23 @@ contract LootBox {
   }
 
   /// @notice Transfers ERC1155 tokens to an account
-  /// @param withdrawals An array of WithdrawERC1155 structs that each include the ERC1155 to transfer and it's corresponding token ids and amounts.
+  /// @param withdrawals An array of WithdrawERC1155 structs that each include the ERC1155 to transfer and its corresponding token ids and amounts.
   /// @param to The recipient of the transfers
   function _withdrawERC1155(WithdrawERC1155[] memory withdrawals, address to) internal {
-    for (uint256 i = 0; i < withdrawals.length; i++) {
+    for (uint256 i; i < withdrawals.length; ++i) {
       withdrawals[i].token.safeBatchTransferFrom(address(this), to, withdrawals[i].ids, withdrawals[i].amounts, withdrawals[i].data);
 
       emit WithdrewERC1155(address(withdrawals[i].token), withdrawals[i].ids, withdrawals[i].amounts, withdrawals[i].data);
     }
   }
 
-  modifier onlyOwner {
+  /// @dev Internal function to be used by the modifier 'onlyOwner'
+  function _checkOwner() internal view {
     require(msg.sender == _owner, "LootBox/only-owner");
+  }
+
+  modifier onlyOwner {
+    _checkOwner();
     _;
   }
 }
